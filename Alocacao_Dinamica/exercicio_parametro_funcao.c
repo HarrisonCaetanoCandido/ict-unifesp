@@ -8,47 +8,64 @@ exibe_dados. (6 pts)*/
 
 #include <stdio.h>
 
-void ler(float *pN1,float *pN2,float *verificar){
-    if(*pN1>10||*pN2>10){
-        *verificar=1;
-    }
+typedef struct{
+    float n1;
+    float n2;
+    float media_aritm;
+    float media_pond;
+}Notas;
+
+void ler(){
+    Notas *notas = (Notas *)malloc(sizeof(Notas)); // Aloca memoria
+
+    printf("Digite a nota 1: ");
+    scanf("%f",&notas->n1);
+
+    printf("\nDigite a nota 2: ");
+    scanf("%f",&notas->n2);
+
+        if(notas->n1>10){
+            while(notas->n1>10){
+                printf("Digite a nota 1 novamente: ");
+                scanf("%f",&notas->n1);
+        }
+        if(notas->n2>10){
+            while(notas->n2>10){
+                printf("\nDigite a nota 2 novamente: ");
+                scanf("%f",&notas->n2);
+            }
+        }
+        }
 }
 
-float mediaritm(float *pN1, float *pN2){
-    float media;
-    media=(*pN1+*pN2)/2;
+float mediaritm(){
+    Notas *notas;
+
+    notas->media_aritm=(notas->n1+notas->n2)/2;
 }
 
-float mediapond(float *pN1,float *pN2){
-    float mediapond;
-    mediapond=(*pN1+*pN2*2)/3;
-
+float mediapond(){
+    Notas *notas;
+    
+    notas->media_pond=(notas->n1+(notas->n2)*2)/3;
 }
 
-float exibe_dados(float *pN1,float *pN2,float media_aritmetica,float media_ponderada){
-    printf("Nota 1: %.2f, Nota 2: %.2f\n",*pN1,*pN2);
-    printf("Media Aritmetica: %.2f\n",media_aritmetica);
-    printf("Media Ponderada: %.2f\n",media_ponderada);
+float exibe_dados(){
+    Notas *notas;
+    system("clear||cls");
+    printf("Nota 1: %.2f, Nota 2: %.2f\n\n",notas->n1,notas->n2);
+    printf("Media Aritmetica: %.2f\n\n",notas->media_aritm);
+    printf("Media Ponderada: %.2f\n\n",notas->media_pond);
 }
 
 int main(){
-    float n1=5,n2=3,verificar=0,media_aritmetica,media_ponderada;
-    float *pN1,*pN2,*pVerif;
-    pN1=&n1;
-    pN2=&n2;
-    pVerif=&verificar;
+    
+    ler();
 
-    ler(pN1,pN2,pVerif);
+    mediaritm();
+    
+    mediapond();
 
-    if(*pVerif==1){
-        printf("Erro! Uma das notas eh invalida!\n");
-    }else{
-
-    media_aritmetica=mediaritm(pN1,pN2);
-
-    media_ponderada=mediapond(pN1,pN2);
-
-    exibe_dados(pN1, pN2, media_aritmetica, media_ponderada);
-    }
+    exibe_dados();
     return 0;
 }
