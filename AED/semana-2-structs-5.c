@@ -8,32 +8,33 @@ apresentar seus dados na tela. Inclua também a
 possibilidade de excluir um registro que possua o
 campo nome igual ao valor passado pelo usuário.
 */
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#define aln 3
 
-typedef struct Aluno{
+typedef struct ALUNOS{
     float n[4];
     float media;
     char nome[30];
-}ALUNO;
+}Alunos;
 
-typedef struct Turma{
-    ALUNO *a[5];
-}TURMA;
-
-void aloca(TURMA *turma[],int index);
-void desaloca(TURMA *turma[],int index,int *aindex);
-int inserir(TURMA *turma,int index,int *aindex);
-float media(TURMA *turma,int aindex);
-void busca(TURMA *turma[],int index,int *aindex);
-void imprimir(TURMA *turma[],int index,int *aindex);
-TURMA excluir(TURMA *turma[],int index,int *aindex);
+void aloca(Alunos *alunos[],int index);
+void desaloca(Alunos *alunos[],int index);
+Alunos inserir(Alunos *aluno);
+float media(Alunos *aluno);
+void busca(Alunos *alunos[],int index);
+void imprimir(Alunos *alunos[],int index);
+Alunos excluir(Alunos *alunos[],int *index);
 void pressione();
 
 int main(){
-    TURMA *turma[3];
-    int selecione, index=0,*aindex;
+    Alunos *alunos[aln];
+    int selecione,index=0;
+
+    // funcao pra fazer a media das 4 notas das posicoes do vetor
+    // funcao pra procurar o registro e mostrar o conteudo dos campos por meio de comparacoes com os campos de nome
+    // excluir registro que possua campo nome igual ao valor passado pelo usuario
 
     do{
         system("clear||cls");
@@ -48,23 +49,23 @@ int main(){
         {
             case 1:
                 system("clear||cls");
-                aloca(turma,index);
-                inserir(turma[index],index,aindex);
+                aloca(alunos,index);
+                inserir(alunos[index]);
                 index++;
-                printf("aindex: %d",*aindex);pressione();
+                pressione();
             break;
             case 2:
                 system("clear||cls");
-                busca(turma,index,aindex);
+                busca(alunos,index);
                 pressione();
             break;
             case 3:
                 system("clear||cls");
-                imprimir(turma,index,aindex);
+                imprimir(alunos,index);
                 pressione();
             break;
             case 4:
-                excluir(turma,index,aindex);
+                excluir(alunos,&index);
             break;
             case 5:
                 printf("\nPrograma encerrado!");
@@ -77,75 +78,105 @@ int main(){
         }
     }while(selecione!=5);
 
-    desaloca(turma,index,aindex);
+    desaloca(alunos,index);
 
     return 0;
 }
 
-void aloca(TURMA *turma[],int index){
-    turma[index]=(TURMA*)malloc(sizeof(TURMA));
-    if(turma[index]==NULL){
+void aloca(Alunos *alunos[],int index){
+    alunos[index]=(Alunos*)malloc(sizeof(Alunos));
+    if(alunos[index]==NULL){
         printf("Nao foi possivel alocar memoria!\n");
         return 0;
     }
 }
 
-void desaloca(TURMA *turma[],int index,int *aindex){
-    int i,j;
+void desaloca(Alunos *alunos[],int index){
+    int i=0;
     for(i=0;i<index;i++){
-        for(j=0;j<aindex;j++){
-            free(turma[i]->a[j]);
-        }
-        free(turma[i]);
+        free(alunos[i]);
     }
 }
 
-int inserir(TURMA *turma,int index,int *aindexx){
+Alunos inserir(Alunos *alunos){ // acho que nao faz sentido pegar index
+    int i;
     char caractere;
-    int i,j,aindex;
+    i=0;
+    fflush(stdin);
+    printf("Digite um nome: ");
+    do{
+        caractere=getchar();
+        alunos->nome[i]=caractere;
+        i++;
+    }while(caractere!='\n');
+    alunos->nome[i-1]='\0';
 
-    printf("Digite quantos alunos deseja registrar: ");
-    scanf("%d",&aindex);
-
-    for(j=0;j<aindex;j++){
-        turma->a[j]=(ALUNO*)malloc(sizeof(ALUNO));
-        i=0;
-        printf("\nA%d | Digite o Nome: ",j);
-        fflush(stdin);
-        do{
-            caractere=getchar();
-            turma->a[j]->nome[i]=caractere;
-            i++;
-        }while(caractere!='\n');
-        turma->a[j]->nome[i-1]='\0';
-
-        for(i=0;i<4;i++){
-            printf("A%d | Insira a nota %d: ",j,i);
-            scanf("%f",&turma->a[j]->n[i]);
-        }
+    for(i=0;i<4;i++){
+        printf("Digite a %d nota: ",i+1);
+        scanf("%f",&alunos->n[i]);
     }
-    media(turma,aindex);
-
-    return aindexx=&aindex;
+    media(alunos);
 }
 
-float media(TURMA *turma,int aindex){
-    float soma;
-    float *pi,*pf;
-    for(int i=0;i<aindex;i++){
-        soma=0;
-        pf=turma->a[i]->n+4;
-        for(pi=turma->a[i]->n;pi<pf;pi++){
-            soma+=*pi;
-        }
-        turma->a[i]->media=soma/4;
+float media(Alunos *alunos){
+    int *pi,*pf,soma=0,media;
+    pf=alunos->n+4;
+    for(pi=alunos->n;pi<pf;pi++){
+        soma=soma+*pi;
     }
+    alunos->media=soma/4;
 }
 
-void busca(TURMA *turma[],int index,int *aindex){
-    char nome_aluno[30],caractere;
+void busca(Alunos *alunos[],int index){
     int i=0,j=0,k=0,senao=0;
+    char caractere,nome_aluno[30];
+    printf("Digite um nome: ");
+    fflush(stdin);
+    do{
+        caractere=getchar();
+        nome_aluno[i]=caractere;
+        i++;
+    }while(caractere!='\n');
+    nome_aluno[i-1]='\0';
 
+    i=0;
+    while(i<index){
+        while(alunos[i]->nome[j]==nome_aluno[j] && alunos[i]->nome[j]!='\0' && nome_aluno[j]!='\0'){
+            j++;
+        }
+        if(alunos[i]->nome[j]=='\0' && nome_aluno[j]=='\0'){
+            printf("Aluno %d | Nome: %s\n",i,alunos[i]->nome);
+            k=0;
+            while(k<4){
+                printf("Aluno %d | Nota %d: %.1f\n",i,k,alunos[i]->n[k]);
+                k++;
+            }
+            return;
+        }else{
+            senao++; 
+        }
+        i++;
+    }
+    if(senao==aln){
+        printf("Nao foi possivel encontrar um registro com o nome: %s",nome_aluno);
+    }
+}
+
+void imprimir(Alunos *alunos[],int index){
+    int i,k;
+    for(i=0;i<index;i++){
+        printf("Aluno %d | Nome: %s\n",i,alunos[i]->nome);
+        k=0;
+        while(k<4){
+            printf("Aluno %d | Nota %d: %.1f\n",i,k,alunos[i]->n[k]);
+            k++;
+        }
+        printf("\n");
+    }
+}
+
+Alunos excluir(Alunos *alunos[],int *index){
+    int i=0,j,k;char caractere,nome_aluno[30];
     printf("Digite o nome do aluno: ");
     fflush(stdin);
     do{
@@ -154,70 +185,23 @@ void busca(TURMA *turma[],int index,int *aindex){
         i++;
     }while(caractere!='\n');
     nome_aluno[i-1]='\0';
-    i=0;
 
-    while(i<index){
-        while(j<*aindex){
-            while(turma[i]->a[j]->nome[k]==nome_aluno[k] && turma[i]->a[j]->nome[k]!='\0' && nome_aluno[k]!='\0'){
+    i=0,j=0,k=0;
+    while(i<*index){
+        while(alunos[i]->nome[j]==nome_aluno[j] && alunos[i]->nome[j]!='\0' && nome_aluno[j]!='\0'){
+            j++;
+        }
+        if(alunos[i]->nome[j]=='\0' && nome_aluno[j]=='\0'){
+            k=i;
+            while(k<*index){
+                alunos[k]=alunos[k+1];
                 k++;
             }
-            if(turma[i]->a[j]->nome[k]=='\0' && nome_aluno[k]=='\0'){
-                printf("Turma %d\n",i);
-                printf("Nome: %s\n",turma[i]->a[j]->nome);
-                for(k=0;k<4;k++){
-                    printf("N%d: %.1f\n",k,turma[i]->a[j]->n[k]);
-                }
-                printf("Media: %.1f\n",turma[i]->a[j]->media);
-            }else{
-                senao++;
-            }
-            j++;
+            (*index)--;
+            return;
         }
         i++;
     }
-    if(senao==index+1*5){
-        printf("Nenhum registro de aluno com esse nome foi encontrado!");
-    }
-}
-
-void imprimir(TURMA *turma[],int index,int *aindex){
-    int i,j,k;
-    for(i=0;i<index;i++){
-        printf("\nTurma %d\n",i);
-        for(j=0;j<*aindex;j++){
-            printf("\nNome: %s\n",turma[i]->a[j]->nome);
-            for(k=0;k<4;k++){
-                printf("N%d: %.1f\n",k,turma[i]->a[j]->n[k]);
-            }
-            printf("Media: %.1f\n",turma[i]->a[j]->media);
-        }
-    }
-}
-
-TURMA excluir(TURMA *turma[],int index,int *aindex){
-    char nome_aluno[30];
-    int i=0,j=0,k=0,l,m;
-    printf("Digite o nome do aluno");
-    scanf("%s",&nome_aluno);
-
-    while(i<index){
-        while(j<*aindex){
-            while(turma[i]->a[j]->nome[k]==nome_aluno[k] && turma[i]->a[j]->nome[k]!='\0' && nome_aluno[k]!='\0'){
-                k++;
-            }
-            if(turma[i]->a[j]->nome[k]=='\0' && nome_aluno[k]=='\0'){
-                l=j;
-                for(l=j;l<*aindex;l++){
-                    for(m=l+1;m<*aindex;m++){
-                        turma[i]->a[l]=turma[i]->a[m]; // l=2,l+1=3;l=3,l+1=4;
-                        *aindex--;
-                    }
-                }
-            }
-            j++;
-            }
-            i++;
-        }
 }
 
 void pressione(){printf("\nPressione qualquer tecla para continuar...");getch();}

@@ -41,7 +41,7 @@ return c_telefone;
 int main(){
     Meuscontatos Agenda[TAM_MAX];
     //case 1/geral:
-    int selecione,index=0,i,c_telefone;
+    int selecione,index=0,i,c_telefone,k;
     int telefone, confirmando;
     char nome[TAM_MAX];
 
@@ -110,11 +110,11 @@ int main(){
         for(i=0;i<index;i++){
             for(int j=1;j<index;j++){
             if(Agenda[i].indice==Agenda[j].indice && i!=j){
-                strcpy(Agenda[i].contato.nome,Agenda[j].contato.nome);
-                Agenda[i].contato.tel=Agenda[j].contato.tel;
-                Agenda[i].indice=Agenda[j].indice;
-                index--;
-        }}}
+                for(k=i;k<index;k++){
+                    strcpy(Agenda[k].contato.nome,Agenda[k+1].contato.nome);
+                    Agenda[k].contato.tel=Agenda[k+1].contato.tel;
+                    Agenda[k].indice=Agenda[k+1].indice;
+        }index--;}}}
 //______________________________________________________________________________________________________
         break;
         case 2: //Listar contato
@@ -177,11 +177,13 @@ int main(){
 
                 for(i=0;i<index;i++){
                      if(indice_ctt_buscar==Agenda[i].indice){
-                         strcpy(Agenda[i].contato.nome,Agenda[i+1].contato.nome);//nome
-                         Agenda[i].contato.tel=Agenda[i+1].contato.tel;//tel
-                         Agenda[i].indice=Agenda[i+1].indice;//indice
-                         confirmando=1;
-                         index--;
+
+                        for(k=i;k<index;k++){
+                            strcpy(Agenda[k].contato.nome,Agenda[k+1].contato.nome);
+                            Agenda[k].contato.tel=Agenda[k+1].contato.tel;
+                            Agenda[k].indice=Agenda[k+1].indice;
+                        }
+                        index--;
 
                          system("clean||cls");
                          if(index==0){
@@ -195,6 +197,7 @@ int main(){
                                 printf("\nContato[%d]\nNome: %s\nTelefone: %d\n",Agenda[i].indice,Agenda[i].contato.nome,Agenda[i].contato.tel);
                                 }
                                 printf("\nContato apagado com sucesso!!\n");
+                                confirmando=1;
 
                                 printf("\nPressione qualquer tecla para retornar ao menu...");
                                 getch();
@@ -223,10 +226,11 @@ int main(){
 
                     for(i=0;i<index;i++){
                         if(strcmp(nome_ctt_buscar,Agenda[i].contato.nome)==0){
-                            strcpy(Agenda[i].contato.nome,Agenda[i+1].contato.nome);
-                            Agenda[i].contato.tel=Agenda[i+1].contato.tel;
-                            Agenda[i].indice=Agenda[i+1].indice;
-                            confirmando=1;
+                            for(k=i;k<index-1;k++){
+                                strcpy(Agenda[k].contato.nome,Agenda[k+1].contato.nome);
+                                Agenda[k].contato.tel=Agenda[k+1].contato.tel;
+                                Agenda[k].indice=Agenda[k+1].indice;
+                            }
                             index--;
 
                             system("clean||cls");
@@ -262,4 +266,5 @@ int main(){
         printf("\nErro! Selecione a opcao novamente\n");
         
         }}while(selecione!=6);
+        return 0;
 }
