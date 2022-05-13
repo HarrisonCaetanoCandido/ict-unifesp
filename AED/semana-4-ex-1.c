@@ -44,7 +44,7 @@ typedef struct fila_FUNCIONARIO
 {
     Func *f; // aloca um bloco de memoria para que ele se torne um vetor de ponteiros do tipo Func
     int n;
-    int ini; 
+    int ini;
 } Funcionario; // FILA
 
 // ---------------------------------------- CLIENTE
@@ -58,13 +58,14 @@ typedef struct fila_CLIENTE
 //---------------------------------------  FUNCOES
 Funcionario *Fcria_fila();
 Cliente *Ccria_fila();
-void inserir(Funcionario *fun, int N, Cliente *cli, int M);
-void saida(Funcionario *fun, int N, Cliente *cli, int M,int *soma);
-int comparar(Funcionario *fun,int N);
-void diminuivet(Funcionario *fun,int *menor, int indice_menor, int N);
+void inserir(Funcionario *fun, int N,Cliente *cli, int M);
+void saida(Funcionario *fun, int N, Cliente *cli, int M, int *soma);
+int comparar(Funcionario *fun, int N);
+void diminuivet(Funcionario *fun, int *menor, int indice_menor, int N);
+int remover(Cliente *cli, int M);
 
 Funcionario *Fcria_fila()
-{ 
+{
     Funcionario *p = (Funcionario *)malloc(sizeof(Funcionario));
     p->n = 0;
     p->ini = 0;
@@ -81,7 +82,7 @@ Cliente *Ccria_fila()
 
 int main()
 {
-    int N, M, i, fim,soma=0;
+    int N, M, i, soma = 0;
 
     scanf("%d", &N); // Quantidade de funcionarios
 
@@ -108,169 +109,159 @@ int main()
         return 0;
     }
 
-    inserir(fun, N, cli, M);
+    inserir(fun, N,cli, M);
 
-    fim=fun->ini+fun->n; // 10, 1+9 = 10
-    for(i=fun->ini;i<fim;i++){
-        printf("funcionario %d | vi: %d\n",i,fun->f[i].vi);
-    }printf("\n");
+    saida(fun, N, cli, M, &soma);
 
-    fim=cli->ini+cli->n;
-    for(i=cli->ini;i<fim;i++){
-        printf("cliente %d | cj: %d\n",i,cli->cj[i]);
-    }
+    printf("%d", soma);
 
-    saida(fun,N,cli,M,&soma);
-
-    printf("soma na main: %d",soma);
-
+    free(fun->f);
+    free(cli->cj);
     free(fun);
     free(cli);
 
     return 0;
 }
 
-void inserir(Funcionario *fun, int N, Cliente *cli, int M)
+void inserir(Funcionario *fun, int N,Cliente *cli, int M) // Aqui digitamos apenas o tamanho das filas
 {
-    int i;
-    if (fun->n == N || cli->n == N)
+    int fim;
+
+    fun->f = (Func *)malloc(N * sizeof(Func)); // aloca memoria para uma struct que tem o campo vi
+
+    while ((fun->ini + fun->n) != N) // Pode ser que nao seja pra usar laco e sim 'fim'
     {
-        return 0; // Vetor de funcionarios ou cliente esta cheio
-    }
-    else
-    {
-        fun->f = (Func *)malloc(N * sizeof(Func)); // aloca memoria para uma struct que tem o campo vi
+        fim = (fun->ini + fun->n) % N;
 
-        for (i = 0; i < N; i++) // Pode ser que nao seja pra usar laco e sim 'fim'
-        { 
-            //fim=(fun->ini+fun->n)%N;
-            scanf("%d", &fun->f[i].vi); // escaneia o tempo de execucao do primeiro funcionario
+        scanf("%d", &fun->f[fim].vi); // escaneia o tempo de execucao do primeiro funcionario
 
-            while ((fun->f[i].vi) < 1 || (fun->f[i].vi) > 100)
-            {
-                scanf("%d", &fun->f[i].vi); // escaneia o tempo de execucao do primeiro funcionario novamente
-            }
-            fun->n++;
-        }
-
-        cli->cj = (int *)malloc(M * sizeof(int));
-
-        for (i = 0; i < M; i++) // Pode ser que nao seja pra usar laco e sim 'fim'
+        while ((fun->f[fim].vi) < 1 || (fun->f[fim].vi) > 100)
         {
-            scanf("%d", &cli->cj[i]); // escaneia a quantidade de itens do cliente i
-
-            while ((cli->cj[i]) < 1 || (cli->cj[i]) > 100)
-            {
-                scanf("%d", &cli->cj[i]); // escaneia a quantidade de itens do cliente i novamente
-            }
-            cli->n++;
+            scanf("%d", &fun->f[fim].vi); // escaneia o tempo de execucao do primeiro funcionario novamente
         }
+
+        fun->n++;
+    }
+
+    cli->cj = (int *)malloc(M * sizeof(int));
+
+    while ((cli->ini + cli->n) != M) 
+    {
+        fim = (cli->ini + cli->n) % M;
+
+        scanf("%d", &cli->cj[fim]); // escaneia a quantidade de itens do cliente i
+
+        while ((cli->cj[fim]) < 1 || (cli->cj[fim]) > 100)
+        {
+            scanf("%d", &cli->cj[fim]); // escaneia a quantidade de itens do cliente i novamente
+        }
+
+        cli->n++;
     }
 }
 
-// quando tiver ocupado a gente muda a posicao que ini aponta
 void saida(Funcionario *fun, int N, Cliente *cli, int M, int *soma)
 {
-    int i, r_cliente, cont=0, *menor, j=0, indice_menor, aux=0, k=0,indice_m_foi=N;
+    int i, r_cliente, cont = 0, *menor, j = 0, indice_menor, indice_m_foi = N;
 
-        i=0;
-        while(i<N) // significa que nao percorremos toda a fila funcionario
+    i = 0;
+
+    if (N > M) // caso a fila fun seja maior que cli
+    {
+        while (i < M) // significa que nao percorremos toda a fila funcionario
         {
 
-        r_cliente = remover(cli,M);
+            r_cliente = remover(cli, M);
 
-        fun->f[i].tempo = fun->f[i].vi * r_cliente; // vetor do produto
+            fun->f[i].tempo = fun->f[i].vi * r_cliente; // vetor do produto
 
-        *soma = *soma + fun->f[i].vi * r_cliente;
+            *soma = *soma + fun->f[i].vi * r_cliente;
 
-        printf("primeiro laco | r_cliente: %d\n\n",r_cliente);
-        printf("primeiro laco | fun->f[i].vi: %d\n\n",fun->f[i].vi);
-        printf("primeiro laco | fun->f[i].tempo: %d\n\n",fun->f[i].tempo);
+            i++; // 1, 2, 3, 4 | 4
+            cont++;
+        }
+    }
+    if (N < M) // caso a fila cli seja maior que fun
+    {
+        while (i < N) // significa que nao percorremos toda a fila funcionario
+        {
 
-        printf("primeiro laco | soma: %d\n\n",*soma);
+            r_cliente = remover(cli, M);
 
-        i++; // 0, 1, 2, 3
-        cont++;
+            fun->f[i].tempo = fun->f[i].vi * r_cliente; // vetor do produto
+
+            *soma = *soma + fun->f[i].vi * r_cliente;
+
+            i++; 
+            cont++;
+        }
+    }
+
+    while (cont != M)
+    {
+        indice_menor = 0;
+        menor = &fun->f[0].tempo;
+
+        for (j = 0; j < N; j++)
+        {
+            if (*menor > fun->f[j].tempo) // ate ele descobrir um menor
+            {
+                menor = &fun->f[j].tempo;
+                indice_menor = j; // indice do menor
+                indice_m_foi++;
+            }
         }
 
-        if(i==N){ // precisamos saber qual posicao do vetor tem o menor valor de tempo em segundos
-            printf("i==N\n\n");
-                while(cont!=M)
-                {
-                    indice_menor=0;
-                    menor=&fun->f[0].tempo;
+        if (indice_m_foi == N) // significa que nao achou nenhum valor na struct menor do que *menor
+        {
+            indice_menor = comparar(fun, N);
+        }
 
-                    printf("*menor antes do for: %d\n\n",*menor);
-                    
-                    for(j=0;j<N;j++){
-                        if(*menor>fun->f[j].tempo){ // ate ele descobrir um menor
-                            menor=&fun->f[j].tempo;
-                            printf("if indice_menor\n");
-                            indice_menor=j; // indice do menor
-                            printf("dentro do laco j | j: %d",j);
-                            indice_m_foi++;
-                        }
-                }
+        diminuivet(fun, menor, indice_menor, N);
 
-                if(indice_m_foi==N){ // significa que nao achou nenhum valor na struct menor do que *menor
-                    indice_menor=comparar(fun,N);
-                }
-                    
-                    printf("*menor: %d\n\n",*menor);
+        r_cliente = remover(cli, M);
 
-                    diminuivet(fun,menor,indice_menor,N);
+        fun->f[indice_menor].tempo = fun->f[indice_menor].vi * r_cliente; // vetor do produto
 
-                    r_cliente = remover(cli,M);
+        *soma = *soma + fun->f[indice_menor].vi * r_cliente;
 
-                    printf("segundo laco | r_cliente: %d\n\n",r_cliente);
-                    printf("segundo laco | indice_menor: %d\n\n",indice_menor);
-                    printf("segundo laco | fun->vi[indice_menor]: %d\n\n",fun->f[indice_menor].vi);
-
-                    fun->f[indice_menor].tempo = fun->f[indice_menor].vi * r_cliente; // vetor do produto
-
-                    *soma = *soma + fun->f[indice_menor].vi * r_cliente;
-
-                    printf("segundo laco | soma: %d\n\n",*soma);
-
-                    for(k=0;k<N;k++){
-                        printf("fun->f[k].tempo[%d]: %d\n",k,fun->f[k].tempo);
-                    }
-
-                    printf("passou tudo\n");
-
-                    cont++;
-                }
-            }
+        cont++;
+    }
 }
 
 int remover(Cliente *p, int M)
 {
     int inicio;
     inicio = p->ini;
-    p->ini = ((p->ini) + 1) % M; // proximo ini 
+    p->ini = ((p->ini) + 1) % M; // proximo ini
     --(p->n);
     return p->cj[inicio];
 }
 
-int comparar(Funcionario *fun,int N){
-    int k,j;
-    printf("em comparar\n\n");
-    for(k=0;k<N;k++){
-        for(j=1;j<N;j++){
-        if(fun->f[k].tempo==fun->f[j].tempo && k!=j && k<j){ // aqui ta errado para o terceiro caso de entrada/saida
-            printf("else indice_menor\n");
-            return k;
+int comparar(Funcionario *fun, int N)
+{
+    int k, j;
+    for (k = 0; k < N; k++)
+    {
+        for (j = 1; j < N; j++)
+        {
+            if (fun->f[k].tempo == fun->f[j].tempo && k != j && k < j)
+            {
+                return k;
             }
         }
     }
     return 0;
 }
 
-void diminuivet(Funcionario *fun, int *menor,int indice_menor,int N){
+void diminuivet(Funcionario *fun, int *menor, int indice_menor, int N)
+{
     int i;
-    for(i=0;i<N;i++){
-        if(indice_menor!=i){
-            fun->f[i].tempo=(fun->f[i].tempo)-(*menor);
+    for (i = 0; i < N; i++)
+    {
+        if (indice_menor != i) // indice_menor que eh a posicao do menor valor
+        {
+            fun->f[i].tempo = (fun->f[i].tempo) - (*menor);
         }
     }
 }
