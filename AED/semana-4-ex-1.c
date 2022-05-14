@@ -58,9 +58,8 @@ typedef struct fila_CLIENTE
 //---------------------------------------  FUNCOES
 Funcionario *Fcria_fila();
 Cliente *Ccria_fila();
-void inserir(Funcionario *fun, int N,Cliente *cli, int M);
+void inserir(Funcionario *fun, int N, Cliente *cli, int M);
 void saida(Funcionario *fun, int N, Cliente *cli, int M, int *soma);
-int comparar(Funcionario *fun, int N);
 void diminuivet(Funcionario *fun, int *menor, int indice_menor, int N);
 int remover(Cliente *cli, int M);
 
@@ -109,7 +108,7 @@ int main()
         return 0;
     }
 
-    inserir(fun, N,cli, M);
+    inserir(fun, N, cli, M);
 
     saida(fun, N, cli, M, &soma);
 
@@ -123,13 +122,13 @@ int main()
     return 0;
 }
 
-void inserir(Funcionario *fun, int N,Cliente *cli, int M) // Aqui digitamos apenas o tamanho das filas
+void inserir(Funcionario *fun, int N, Cliente *cli, int M) 
 {
     int fim;
 
     fun->f = (Func *)malloc(N * sizeof(Func)); // aloca memoria para uma struct que tem o campo vi
 
-    while ((fun->ini + fun->n) != N) // Pode ser que nao seja pra usar laco e sim 'fim'
+    while ((fun->ini + fun->n) != N) 
     {
         fim = (fun->ini + fun->n) % N;
 
@@ -145,7 +144,7 @@ void inserir(Funcionario *fun, int N,Cliente *cli, int M) // Aqui digitamos apen
 
     cli->cj = (int *)malloc(M * sizeof(int));
 
-    while ((cli->ini + cli->n) != M) 
+    while ((cli->ini + cli->n) != M)
     {
         fim = (cli->ini + cli->n) % M;
 
@@ -162,71 +161,70 @@ void inserir(Funcionario *fun, int N,Cliente *cli, int M) // Aqui digitamos apen
 
 void saida(Funcionario *fun, int N, Cliente *cli, int M, int *soma)
 {
-    int i, r_cliente, cont = 0, *menor, j = 0, indice_menor, indice_m_foi = N;
+    int i, r_cliente, *menor, *maior, indice_menor, aux = 0;
+
+    // --------------------- PREENCHER O TEMPO DE CADA FUNCIONARIO DE ACORDO COM A DISPONIBILIDADE ---------------------------------
 
     i = 0;
 
-    if (N > M) // caso a fila fun seja maior que cli
+    while (i < N) // significa que nao percorremos toda a fila funcionario
     {
-        while (i < M) // significa que nao percorremos toda a fila funcionario
-        {
+        r_cliente = remover(cli, M);
 
-            r_cliente = remover(cli, M);
+        fun->f[i].tempo = fun->f[i].vi * r_cliente; // vetor do produto
 
-            fun->f[i].tempo = fun->f[i].vi * r_cliente; // vetor do produto
-
-            *soma = *soma + fun->f[i].vi * r_cliente;
-
-            i++; // 1, 2, 3, 4 | 4
-            cont++;
-        }
-    }
-    if (N < M) // caso a fila cli seja maior que fun
-    {
-        while (i < N) // significa que nao percorremos toda a fila funcionario
-        {
-
-            r_cliente = remover(cli, M);
-
-            fun->f[i].tempo = fun->f[i].vi * r_cliente; // vetor do produto
-
-            *soma = *soma + fun->f[i].vi * r_cliente;
-
-            i++; 
-            cont++;
-        }
+        i++;
     }
 
-    while (cont != M)
+    //----------------------------------------------------------------------------------------------------------------------------------------------
+
+    // - CASO A FILA DE FUNCIONARIOS ESTEJA TODA OCUPADA, VAMOS VERIFICAR QUEM TERMINA MAIS RAPIDO E IR DESENFILEIRANDO E SUBSTITUINDO O TEMPO -
+
+    while (cli->n != 0)
     {
         indice_menor = 0;
+        maior = &fun->f[0].tempo;
         menor = &fun->f[0].tempo;
 
-        for (j = 0; j < N; j++)
+        for (i = 0; i < N; i++)
         {
-            if (*menor > fun->f[j].tempo) // ate ele descobrir um menor
+            if (*menor > fun->f[i].tempo) // ate ele descobrir um menor
             {
-                menor = &fun->f[j].tempo;
-                indice_menor = j; // indice do menor
-                indice_m_foi++;
+                menor = &fun->f[i].tempo;
+                indice_menor = i; // indice do menor
+            }
+
+            if (fun->f[i].tempo > *maior) // ate ele descobrir um maior
+            {
+                maior = &fun->f[i].tempo;
             }
         }
 
-        if (indice_m_foi == N) // significa que nao achou nenhum valor na struct menor do que *menor
-        {
-            indice_menor = comparar(fun, N);
-        }
+        // ------------------------------------------------- ATE AQUI SO ACHAMOS O *MENOR ---------------------------------------------------
 
-        diminuivet(fun, menor, indice_menor, N);
+        aux = aux + *menor; // vai guardar nosso menor tempo
 
-        r_cliente = remover(cli, M);
+        diminuivet(fun, menor, indice_menor, N); // desconta o tempo decorrido de todas as posicoes da fila funcionario
 
-        fun->f[indice_menor].tempo = fun->f[indice_menor].vi * r_cliente; // vetor do produto
+        r_cliente = remover(cli, M); // remove da fila cliente
 
-        *soma = *soma + fun->f[indice_menor].vi * r_cliente;
-
-        cont++;
+        fun->f[indice_menor].tempo = fun->f[indice_menor].vi * r_cliente;
     }
+    // -------------------------------------------------------------------------------------------------------------------------
+    //                                      PEGAR O MAIOR VALOR DE TEMPO E SOMAR EM *SOMA
+    
+    maior = &fun->f[0].tempo;
+    for (i = 0; i < N; i++)
+    {
+        if (fun->f[i].tempo > *maior)
+        {
+            maior = &fun->f[i].tempo;
+        }
+    }
+
+    // -------------------------------------------------------------------------------------------------------------------------
+
+    *soma = *maior + aux;
 }
 
 int remover(Cliente *p, int M)
@@ -236,22 +234,6 @@ int remover(Cliente *p, int M)
     p->ini = ((p->ini) + 1) % M; // proximo ini
     --(p->n);
     return p->cj[inicio];
-}
-
-int comparar(Funcionario *fun, int N)
-{
-    int k, j;
-    for (k = 0; k < N; k++)
-    {
-        for (j = 1; j < N; j++)
-        {
-            if (fun->f[k].tempo == fun->f[j].tempo && k != j && k < j)
-            {
-                return k;
-            }
-        }
-    }
-    return 0;
 }
 
 void diminuivet(Funcionario *fun, int *menor, int indice_menor, int N)
