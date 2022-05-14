@@ -81,7 +81,7 @@ Cliente *Ccria_fila()
 
 int main()
 {
-    int N, M, i, soma = 0;
+    int N, M, soma = 0;
 
     scanf("%d", &N); // Quantidade de funcionarios
 
@@ -113,6 +113,7 @@ int main()
     saida(fun, N, cli, M, &soma);
 
     printf("%d", soma);
+
     free(fun->f);
     free(cli->cj);
     free(fun);
@@ -138,6 +139,8 @@ void inserir(Funcionario *fun, int N, Cliente *cli, int M)
             scanf("%d", &fun->f[fim].vi); // escaneia o tempo de execucao do primeiro funcionario novamente
         }
 
+        fun->f[fim].tempo = 0;
+
         fun->n++;
     }
 
@@ -161,28 +164,12 @@ void inserir(Funcionario *fun, int N, Cliente *cli, int M)
 void saida(Funcionario *fun, int N, Cliente *cli, int M, int *soma)
 {
     int i, r_cliente, *menor, *maior, indice_menor, aux = 0;
-
-    // --------------------- PREENCHER O TEMPO DE CADA FUNCIONARIO DE ACORDO COM A DISPONIBILIDADE ---------------------------------
-
-    i = 0;
-
-    while (i < N) // significa que nao percorremos toda a fila funcionario
-    {
-        r_cliente = remover(cli, M);
-
-        fun->f[i].tempo = fun->f[i].vi * r_cliente; // vetor do produto
-
-        i++;
-    }
-
-    //----------------------------------------------------------------------------------------------------------------------------------------------
-
-    // - CASO A FILA DE FUNCIONARIOS ESTEJA TODA OCUPADA, VAMOS VERIFICAR QUEM TERMINA MAIS RAPIDO E IR DESENFILEIRANDO E SUBSTITUINDO O TEMPO -
+    
+// -------- VAMOS VERIFICAR QUEM TERMINA MAIS RAPIDO E IR DESENFILEIRANDO E SUBSTITUINDO O TEMPO --------
 
     while (cli->n != 0)
     {
         indice_menor = 0;
-        maior = &fun->f[0].tempo;
         menor = &fun->f[0].tempo;
 
         for (i = 0; i < N; i++)
@@ -191,11 +178,6 @@ void saida(Funcionario *fun, int N, Cliente *cli, int M, int *soma)
             {
                 menor = &fun->f[i].tempo;
                 indice_menor = i; // indice do menor
-            }
-
-            if (fun->f[i].tempo > *maior) // ate ele descobrir um maior
-            {
-                maior = &fun->f[i].tempo;
             }
         }
 
