@@ -115,20 +115,23 @@ int main()
     printf("%d", soma);
 
     free(fun->f);
-    free(cli->cj);
+    for (i = 0; i < M; i++)
+    {
+        free(cli->cj[i]);
+    }
     free(fun);
     free(cli);
 
     return 0;
 }
 
-void inserir(Funcionario *fun, int N, Cliente *cli, int M) 
+void inserir(Funcionario *fun, int N, Cliente *cli, int M)
 {
     int fim;
 
     fun->f = (Func *)malloc(N * sizeof(Func)); // aloca memoria para uma struct que tem o campo vi
 
-    while ((fun->ini + fun->n) != N) 
+    while ((fun->ini + fun->n) != N)
     {
         fim = (fun->ini + fun->n) % N;
 
@@ -212,7 +215,7 @@ void saida(Funcionario *fun, int N, Cliente *cli, int M, int *soma)
     }
     // -------------------------------------------------------------------------------------------------------------------------
     //                                      PEGAR O MAIOR VALOR DE TEMPO E SOMAR EM *SOMA
-    
+
     maior = &fun->f[0].tempo;
     for (i = 0; i < N; i++)
     {
