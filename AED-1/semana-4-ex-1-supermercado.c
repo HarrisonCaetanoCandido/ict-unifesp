@@ -30,7 +30,7 @@
 
 // --------------------------------------- FUNCIONARIO
 
-typedef struct fila_FUNCIONARIO
+typedef struct vetor_FUNCIONARIO
 {
     int vi;
     int tempo;
