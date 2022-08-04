@@ -104,13 +104,10 @@ ParvBB remover(ParvBB a, float X, char caractere) // remocao ordenada
     if (a == NULL)
         return NULL;
 
+    a->esq = remover(a->esq, X, caractere); // se o no atual for menor do que a area X, segue para a esquerda ou caso o no atual seja maior do que X, segue para a esquerda, como os nos nunca terao valores iguais por conta da funcao de inserir, nao eh preciso um if para essa condicao especifica
+    
     if (a->area < X)
-    {
-        a->esq = remover(a->esq, X, caractere); // se o no atual for menor do que a area X, segue para a esquerda
         a->dir = remover(a->dir, X, caractere); // depois segue para a direita para cobrir casos em que alguns dos nos a direita ainda sao menores do que X, mas maiores do que o no atual
-    }
-    else
-        a->esq = remover(a->esq, X, caractere); // caso o no atual seja maior do que X, segue para a esquerda, como os nos nunca terao valores iguais por conta da funcao de inserir, nao eh preciso um if para essa condicao especifica
 
     if (a->objeto == caractere && a->area < X)
     {
