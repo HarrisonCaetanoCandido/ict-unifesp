@@ -4,24 +4,24 @@
     Turma: Integral
 */
 /*
-    Você está em uma empresa que segue uma regra para definir o seu presidente a 
-    cada quatro anos. A empresa realiza uma hierarquia onde o parâmetro para decidir quem 
-    está mais alto nela é o tempo nesta empresa e também quem foi o funcionário que o 
-    contratou, um funcionário pode contratar outros e podemos expressar as contratações 
-    como uma árvore. 
-    João é o primeiro funcionário, portanto ele será o presidente da empresa durante o 
-    primeiro mandato. Na hierarquia, o próximo presidente será Ana e de forma não muito 
-    intuitiva Gabriel será o próximo. A mecânica para determinar o próximo presidente sempre 
-    escolhe qual será o com mais tempo na empresa primeiramente, ou seja, o funcionário mais 
-    à esquerda da árvore e um detalhe a ser considerado é que para o segundo funcionário 
-    contratado do presidente ser eleito presidente, todos os funcionários indicados pelo seu 
-    primeiro funcionário e seus sucessores devem ter feito seu mandato para isso ocorrer. Ou 
-    seja, o funcionário mais à esquerda e seus sucessores possuem mais prioridade que o 
-    segundo funcionário contratado pelo presidente. Exemplificando, no caso do diagrama 
+    Você está em uma empresa que segue uma regra para definir o seu presidente a
+    cada quatro anos. A empresa realiza uma hierarquia onde o parâmetro para decidir quem
+    está mais alto nela é o tempo nesta empresa e também quem foi o funcionário que o
+    contratou, um funcionário pode contratar outros e podemos expressar as contratações
+    como uma árvore.
+    João é o primeiro funcionário, portanto ele será o presidente da empresa durante o
+    primeiro mandato. Na hierarquia, o próximo presidente será Ana e de forma não muito
+    intuitiva Gabriel será o próximo. A mecânica para determinar o próximo presidente sempre
+    escolhe qual será o com mais tempo na empresa primeiramente, ou seja, o funcionário mais
+    à esquerda da árvore e um detalhe a ser considerado é que para o segundo funcionário
+    contratado do presidente ser eleito presidente, todos os funcionários indicados pelo seu
+    primeiro funcionário e seus sucessores devem ter feito seu mandato para isso ocorrer. Ou
+    seja, o funcionário mais à esquerda e seus sucessores possuem mais prioridade que o
+    segundo funcionário contratado pelo presidente. Exemplificando, no caso do diagrama
     acima a ordem será: João, Ana, Gabriel, Matheus e Bob.
-    Como qualquer outra empresa, funcionários podem ser contratados a qualquer 
-    momento e demitidos, então da árvore a ser montada, deverá ser possível inserir e deletar 
-    nós a qualquer momento. Caso um funcionário seja demitido, todos os funcionários que ele 
+    Como qualquer outra empresa, funcionários podem ser contratados a qualquer
+    momento e demitidos, então da árvore a ser montada, deverá ser possível inserir e deletar
+    nós a qualquer momento. Caso um funcionário seja demitido, todos os funcionários que ele
     indicou e seus sucessores também devem ser removidos da árvore
 */
 
@@ -140,15 +140,15 @@ Parvgen inserir(Parvgen a)
                 if (novo->dia == q->dia && novo->mes == q->mes && novo->ano == q->ano) // insere por ordem de chegada caso as datas sejam iguais
                 {
                     if (q->prox != NULL && (novo->ano < q->prox->ano || novo->ano <= q->prox->ano && novo->mes < q->prox->mes ||
-                        novo->ano <= q->prox->ano && novo->mes <= q->prox->mes && novo->dia < q->prox->dia)) 
-                        // caso o nó da frente nao tenha uma data exatamente igual ao do novo nó, se tiver, precisaremos percorrer mais um nó                   
-                    {    
+                                            novo->ano <= q->prox->ano && novo->mes <= q->prox->mes && novo->dia < q->prox->dia))
+                    // caso o nó da frente nao tenha uma data exatamente igual ao do novo nó, se tiver, precisaremos percorrer mais um nó
+                    {
                         novo->prox = q->prox;
                         q->prox = novo;
                         return a;
                     }
 
-                    if(q->prox == NULL)
+                    if (q->prox == NULL)
                     {
                         q->prox = novo;
                         return a;
@@ -193,7 +193,8 @@ int nome_repetido(Parvgen a, char nome[])
     {
         for (i = 0; i < strlen(nome); i++)
             if (a->nome[i] != nome[i])
-                return nome_repetido(a->prim, nome) + nome_repetido(a->prox, nome);
+                if (nome_repetido(a->prim, nome) == 0)
+                    return nome_repetido(a->prox, nome);
 
         return 1;
     }
