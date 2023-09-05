@@ -6,7 +6,7 @@
 /* This file contains the scheduling policy for SCHED
  *
  * The entry points are:
- *   do_noquantum:        Called on behalf of process' that run out of quantum
+ *   do_noquantum:        Called on behalf of process' that run out of quantum. Modified for this task to retain the starvation property of priority queue algorithms, by Felipe M. de Paula, Harrison C. Candido and Pedro F. Dias
  *   do_start_scheduling  Request to start scheduling a proc
  *   do_stop_scheduling   Request to stop scheduling a proc
  *   do_nice		  Request to change the nice level on a proc

@@ -15,6 +15,7 @@
  *   May 26, 2005     rewrote message passing functions  (Jorrit N. Herder)
  *   May 24, 2005     new notification system call  (Jorrit N. Herder)
  *   Oct 28, 2004     nonblocking send and receive calls  (Jorrit N. Herder)
+ *   Jun 14, 2023     modifying the priority of treated processes to zero, transforming the minix multi-queue scheduler to the round robin algorithm (Felipe M. de Paula, Harrison C. Candido, Pedro F. Dias)
  *
  * The code here is critical to make everything work and is important for the
  * overall performance of the system. A large fraction of the code deals with
