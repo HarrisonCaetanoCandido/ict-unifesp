@@ -1,3 +1,8 @@
+/*
+ * Nome: Felipe Martins de Paula RA:140777
+ * Nome: Harrison Caetano Candido RA:156264
+ * Nome: Pedro Figueiredo Dias RA:156333
+ */
 /* This file contains the scheduling policy for SCHED
  *
  * The entry points are:

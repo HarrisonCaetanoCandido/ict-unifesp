@@ -1,8 +1,8 @@
-/* 
-Instruções:
-1. Codifique em apenas 1 (um) arquivo (.c). Não modularize em bibliotecas.
-2. Copie e cole todo o código do seu arquivo .c logo após o término deste comentário.
-*/
+/*
+ * Nome: Felipe Martins de Paula RA:140777
+ * Nome: Harrison Caetano Candido RA:156264
+ * Nome: Pedro Figueiredo Dias RA:156333
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
