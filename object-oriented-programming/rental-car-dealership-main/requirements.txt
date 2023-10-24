@@ -1,0 +1,18 @@
+Based on Clean Architecture we got:
+    sign up
+        - happy path
+        - prevent duplicate user
+        - verify password strength / usar bibliotecas de criptografia
+            - should contain uppercase letter
+            - should contain lowercase letter
+            - should contain number
+            - should contain special character
+            - should contain at least six characters
+            - should contain at most twelve characters
+    sign in
+    create a rent-list
+    create a car-rent in rent-list
+    remove a car-rent from rent-list
+    delete an user/account
+    change car-rent data
+    change user data

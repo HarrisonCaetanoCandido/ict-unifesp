@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Arquivos css ficam todos na pasta static -->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+    <title>Calculadora de Zeros de Funções</title>
+</head>
+
+<body>
+    <header>
+        <div class="flex-container navbar">
+            <h1>Calculadora de Zeros de Função</h1>
+        </div>
+    </header>
+
+    <div class="flex-container">
+        <section class="section-one">
+            <div class="selection-menu">
+                <!-- na tag form, se tivermos uma ação, ela será redirecionada para a função index. seu método será o POST (se comunica com o servidor, envia dados)-->
+                <form class="insert-data" action="{{ url_for('index') }}" method="POST">
+                    <h1>Bisection Method</h1>
+                    <label for="">Função polinomial:</label><br>
+                    <input type="text" name="polynomial_func" placeholder="insira a função"><br>
+                    <label for="">a0:</label><br>
+                    <input type="text" name="a0" placeholder="insira o valor de a0"><br>
+                    <label for="">b0:</label><br>
+                    <input type="text" name="b0" placeholder="insira o valor de b0"><br>
+                    <label for="">erro:</label><br>
+                    <input type="text" name="error" placeholder="insira o valor do erro"><br>
+                    <label for="">Máximo de Iterações:</label><br>
+                    <input type="text" name="it_max" placeholder="insira o número máximo de iterações"><br>
+                    <input type="submit" value = "Enviar">
+                    <input type="button" onclick="reset()" value="Limpar">
+                </form>
+                <!-- na tag form, se tivermos uma ação, ela será redirecionada para a função index. seu método será o POST (se comunica com o servidor, envia dados)-->
+                <form class="insert-data" action="{{ url_for('index') }}" method="POST">
+                    <h1>Newton Method</h1>
+                    <label for="">Função polinomial:</label><br>
+                    <input type="text" name="polynomial_func" placeholder="insira a função"><br>
+                    <label for="">xk:</label><br>
+                    <input type="text" name="xk" placeholder="insira o valor de xk"><br>
+                    <label for="">erro:</label><br>
+                    <input type="text" name="nerror" placeholder="insira o valor do erro"><br>
+                    <label for="">Máximo de Iterações:</label><br>
+                    <input type="text" name="nit_max" placeholder="insira o número máximo de iterações"><br>
+                    <input type="submit" value = "Enviar">
+                    <input type="button" onclick="reset()" value="Limpar">
+                </form>
+                <!-- na tag form, se tivermos uma ação, ela será redirecionada para a função index. seu método será o POST (se comunica com o servidor, envia dados)-->
+                <form class="insert-data" action="{{ url_for('index') }}" method="POST">
+                    <h1>Secant Method</h1>
+                    <label for="">Função polinomial:</label><br>
+                    <input type="text" name="polynomial_func" placeholder="insira a função"><br>
+                    <label for="">a0:</label><br>
+                    <input type="text" name="sa0" placeholder="insira o valor de a0"><br>
+                    <label for="">b0:</label><br>
+                    <input type="text" name="sb0" placeholder="insira o valor de b0"><br>
+                    <label for="">erro:</label><br>
+                    <input type="text" name="serror" placeholder="insira o valor do erro"><br>
+                    <label for="">Máximo de Iterações:</label><br>
+                    <input type="text" name="sit_max" placeholder="insira o número máximo de iterações"><br>
+                    <input type="submit" value = "Enviar">
+                    <input type="button" onclick="reset()" value="Limpar">
+                </form>
+            </div>
+            {% if plot_url %}
+                <img src = {{plot_url}} alt = "Gráfico não plotado" height="500" width="1000">
+            {% endif %}
+            {% if value %}
+                <h1>{{value}}</h1>
+            {% endif %}
+        </section>
+    </div>
+    <script src="../static/js/index.js"></script>
+</body>
+</html>
